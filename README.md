@@ -1,183 +1,261 @@
-# ![](https://ga-dash.s3.amazonaws.com/production/assets/logo-9f88ae6c9c3871690e33280fcf557f33.png) Project 2 - Ames Housing Data and Kaggle Challenge
+# Project 2
+---
+# Sale Price prediction Model:
 
-Welcome to Project 2! It's time to start modeling.
+## Context
+Zillow uses a proprietary system for their calculations which is being widely manipulated by listing agents and homeowners to exaggerate the value of most homes on Zillow. This happens because Zillow allows homeowners and listing agents to enter unverified information about homes.
 
-**Primary Learning Objectives:**
-1. Creating and iteratively refining a regression model
-2. Using [Kaggle](https://www.kaggle.com/) to practice the modeling process
-3. Providing business insights through reporting and presentation.
-
-You are tasked with creating a regression model based on the Ames Housing Dataset. This model will predict the price of a house at sale.
-
-The Ames Housing Dataset is an exceptionally detailed and robust dataset with over 70 columns of different features relating to houses.
-
-Secondly, we are hosting a competition on Kaggle to give you the opportunity to practice the following skills:
-
-- Refining models over time
-- Use of train-test split, cross-validation, and data with unknown values for the target to simulate the modeling process
-- The use of Kaggle as a place to practice data science
-
-As always, you will be submitting a technical report and a presentation. **You may find that the best model for Kaggle is not the best model to address your data science problem.**
-
-## Set-up
-
-Before you begin working on this project, please do the following:
-
-1. Sign up for an account on [Kaggle](https://www.kaggle.com/)
-2. **IMPORTANT**: Click this link ([Regression Challenge Sign Up](https://www.kaggle.com/t/2e66de8458474d98bad4a1abcb003459)) to **join** the competition (otherwise you will not be able to make submissions!)
-3. Review the material on the [DSIR-111 Regression Challenge](https://www.kaggle.com/c/dsir-111-project-2-regression-challenge/data)
-4. Review the [data description](http://jse.amstat.org/v19n3/decock/DataDocumentation.txt).
-
-## The Modeling Process
-
-1. The train dataset has all of the columns that you will need to generate and refine your models. The test dataset has all of those columns except for the target that you are trying to predict in your Regression model.
-2. Generate your regression model using the training data. We expect that within this process, you'll be making use of:
-    - train-test split
-    - cross-validation / grid searching for hyperparameters
-    - strong exploratory data analysis to question correlation and relationship across predictive variables
-    - code that reproducibly and consistently applies feature transformation (such as the preprocessing library)
-3. Predict the values for your target column in the test dataset and submit your predictions to Kaggle to see how your model does against unknown data.
-    - **Note**: Kaggle expects to see your submissions in a specific format. Check the challenge's page to make sure you are formatting your CSVs correctly!
-    - **You are limited to models you've learned in class**. In other words, you cannot use XGBoost, Neural Networks or any other advanced model for this project.
-4. Evaluate your models!
-    - consider your evaluation metrics
-    - consider your baseline score
-    - how can your model be used for inference?
-    - why do you believe your model will generalize to new data?
-
-## Submission
-
-Materials must be submitted by the beginning of class on the specified date.
-
-The last day for the Kaggle competition will be the specified date in your lesson schedule.
-
-Your technical report will be hosted on Github Enterprise. Make sure it includes:
-
-- A README.md (that isn't this file)
-- Jupyter notebook(s) with your analysis and models (renamed to describe your project)
-- At least one successful prediction submission on [DSIR-111 Regression Challenge](https://www.kaggle.com/t/2e66de8458474d98bad4a1abcb003459) --  you should see your name in the "[Leaderboard](https://www.kaggle.com/c/dsir-111-project-2-regression-challenge/leaderboard)" tab.
-- Data files
-- Presentation slides
-- Any other necessary files (images, etc.)
-
-**Check with your instructors for how they would like you to submit your repo for review.**
+## Problem statement
+Build a model that predicts house sale prices dismissing agent manipulated listings that might cause unpredictability in forecasting.
 
 ---
+## Description of data
+1. [`train.csv`](./datasets/train.csv):
+This data set contains information from the Ames Assessor’s Office used in computing assessed values for individual residential properties sold in Ames, IA from 2006 to 2010. 
+Here is a link to the data documentation: [data description](http://jse.amstat.org/v19n3/decock/DataDocumentation.txt). It has 2051 rows and 81 columns.
 
-## Presentation Structure
+2. [`train-data-clean-imputed-1.1.csv`](./data/act_GOOD.csv):
+This data set is obtained after cleaning and formatting the original data set [`train.csv`](./datasets/train.csv). It has 1967 rows and 67 columns. All variable types and descriptions can be found in the link to the data documentation: [data description](http://jse.amstat.org/v19n3/decock/DataDocumentation.txt). Next, all the variables (columns) of this data set are displayed
 
-- **Must be within time limit established by instructors.**
-- Use Google Slides or some other visual aid (Keynote, Powerpoint, etc).
-- Consider the audience. **Check with your instructors for direction**.
-- Start with the **data science problem**.
-- Use visuals that are appropriately scaled and interpretable.
-- Talk about your procedure/methodology (high level).
-- Talk about your primary findings.
-- Make sure you provide **clear recommendations** that follow logically from your analyses and narrative and answer your data science problem.
-
-Be sure to rehearse and time your presentation before class.
+| Variable        |
+|-----------------|
+| id              |
+| pid             |
+| ms_subclass     |
+| lot_area        |
+| overall_qual    |
+| overall_cond    |
+| year_built      |
+| year_remod/add  |
+| mas_vnr_area    |
+| bsmtfin_sf_1    |
+| bsmtfin_sf_2    |
+| bsmt_unf_sf     |
+| total_bsmt_sf   |
+| 1st_flr_sf      |
+| 2nd_flr_sf      |
+| low_qual_fin_sf |
+| gr_liv_area     |
+| bsmt_full_bath  |
+| bsmt_half_bath  |
+| full_bath       |
+| half_bath       |
+| bedroom_abvgr   |
+| kitchen_abvgr   |
+| totrms_abvgrd   |
+| fireplaces      |
+| garage_cars     |
+| garage_area     |
+| wood_deck_sf    |
+| open_porch_sf   |
+| enclosed_porch  |
+| 3ssn_porch      |
+| screen_porch    |
+| pool_area       |
+| misc_val        |
+| mo_sold         |
+| yr_sold         |
+| saleprice       |
+| ms_zoning       |
+| lot_shape       |
+| land_contour    |
+| lot_config      |
+| land_slope      |
+| neighborhood    |
+| condition_1     |
+| condition_2     |
+| bldg_type       |
+| house_style     |
+| roof_style      |
+| roof_matl       |
+| exterior_1sr    |
+| exterior_2nd    |
+| mas_vnr_type    |
+| exter_qual      |
+| exter_cond      |
+| foundation      |
+| bsmt_qual       |
+| bsmt_cond       |
+| bsmt_exposure   |
+| bsmtin_type_1   |
+| bsmtin_type_2   |
+| heating         |
+| heating_qc      |
+| electrical      |
+| kitchen_qual    |
+| functional      |
+| paved_drive     |
+| sale_type       |
 
 ---
+## Data Analysis
 
-## Rubric
-Your local instructor will evaluate your project (for the most part) using the following criteria.  You should make sure that you consider and/or follow most if not all of the considerations/recommendations outlined below **while** working through your project.
+1. **Data cleaning:**
+These are the steps taken to go from the original data set [`train.csv`](./datasets/train.csv) to the cleaned data set [`train-data-clean-imputed-1.1.csv`](./data/act_GOOD.csv), which is afterwards used to proceed with the model development:
 
-**Scores will be out of 27 points based on the 9 items in the rubric.** <br>
-*3 points per section*<br>
+    - Formatted all variable names (column names)
+    - Checked for missing values
+    - Removed all columns that contained more than 5% of null cells
+    - Created a dataframe with only the numerical variables
+    - Imputed missing values for the rest of columns containing null cells (of the numerical variables)
+    - Created a dataframe with only categorical variables
+    - Merged the imputed missing values dataframe with the prior created categorical dataframe
+    - Removed all rows containing null cells
+    - Checked for potential corrupting charachters in the categorical variables
+    - Studied correlation between target feature and categoricak variables via One-way ANOVA model
+    - Removed variable with no correlation to target feature
 
-| Score | Interpretation |
-| --- | --- |
-| **0** | *Project fails to meet the minimum requirements for this item.* |
-| **1** | *Project meets the minimum requirements for this item, but falls significantly short of portfolio-ready expectations.* |
-| **2** | *Project exceeds the minimum requirements for this item, but falls short of portfolio-ready expectations.* |
-| **3** | *Project meets or exceeds portfolio-ready expectations; demonstrates a thorough understanding of every outlined consideration.* |
+2. **EDA and visualization:**
+In this section, the data will be analyzed for an overview study of the data set.
 
-### The Data Science Process
+First, I checked for obvious outliers based of data documentation recommendation. The next visualizations are "sale price" and "above ground living area" boxplots.
 
-**Problem Statement**
-- Is it clear what the student plans to do?
-- What type of model will be developed?
-- How will success be evaluated?
-- Is the scope of the project appropriate?
-- Is it clear who cares about this or why this is important to investigate?
-- Does the student consider the audience and the primary and secondary stakeholders?
+![This is an image](./images/Sale-price-boxplot.png)
 
-**Data Cleaning and EDA**
-- Are missing values imputed appropriately?
-- Are distributions examined and described?
-- Are outliers identified and addressed?
-- Are appropriate summary statistics provided?
-- Are steps taken during data cleaning and EDA framed appropriately?
-- Does the student address whether or not they are likely to be able to answer their problem statement with the provided data given what they've discovered during EDA?
+As we can see, there are quite a few values that could be considered outliers. Because there are quite a lot and aren't that unique, I continued exploring.
 
-**Preprocessing and Modeling**
-- Are categorical variables one-hot encoded?
-- Does the student investigate or manufacture features with linear relationships to the target?
-- Have the data been scaled appropriately?
-- Does the student properly split and/or sample the data for validation/training purposes?
-- Does the student utilize feature selection to remove noisy or multi-collinear features?
-- Does the student test and evaluate a variety of models to identify a production algorithm (**AT MINIMUM:** linear regression, lasso, and ridge)?
-- Does the student defend their choice of production model relevant to the data at hand and the problem?
-- Does the student explain how the model works and evaluate its performance successes/downfalls?
+![This is an image](./images/Ab-gr-liv-area-boxplot.png)
 
-**Evaluation and Conceptual Understanding**
-- Does the student accurately identify and explain the baseline score?
-- Does the student select and use metrics relevant to the problem objective?
-- Is more than one metric utilized in order to better assess performance?
-- Does the student interpret the results of their model for purposes of inference?
-- Is domain knowledge demonstrated when interpreting results?
-- Does the student provide appropriate interpretation with regards to descriptive and inferential statistics?
+To clearly visualize which are the obvious outliers regarding this two variables, I proceeded to plot them together.
 
-**Conclusion and Recommendations**
-- Does the student provide appropriate context to connect individual steps back to the overall project?
-- Is it clear how the final recommendations were reached?
-- Are the conclusions/recommendations clearly stated?
-- Does the conclusion answer the original problem statement?
-- Does the student address how findings of this research can be applied for the benefit of stakeholders?
-- Are future steps to move the project forward identified?
+![This is an image](./images/Plot-sale_price-ab_gr_area.png)
 
-### Organization and Professionalism
+As shown above, there are two clear outliers describing houses with more than 4,000 sqft which I removed.
 
-**Project Organization**
-- Are modules imported correctly (using appropriate aliases)?
-- Are data imported/saved using relative paths?
-- Does the README provide a good executive summary of the project?
-- Is markdown formatting used appropriately to structure notebooks?
-- Are there an appropriate amount of comments to support the code?
-- Are files & directories organized correctly?
-- Are there unnecessary files included?
-- Do files and directories have well-structured, appropriate, consistent names?
+Next, I looked into the target feature distribution:
 
-**Visualizations**
-- Are sufficient visualizations provided?
-- Do plots accurately demonstrate valid relationships?
-- Are plots labeled properly?
-- Are plots interpreted appropriately?
-- Are plots formatted and scaled appropriately for inclusion in a notebook-based technical report?
+![This is an image](./images/Sale-price-distribution.png)
 
-**Python Syntax and Control Flow**
-- Is care taken to write human readable code?
-- Is the code syntactically correct (no runtime errors)?
-- Does the code generate desired results (logically correct)?
-- Does the code follows general best practices and style guidelines?
-- Are Pandas functions used appropriately?
-- Are `sklearn` methods used appropriately?
+As we can observe, the distribution is slightly right skewed, but fairly normal. We can expect normality in our predictive sale prices later on. 
 
-**Presentation**
-- Is the problem statement clearly presented?
-- Does a strong narrative run through the presentation building toward a final conclusion?
-- Are the conclusions/recommendations clearly stated?
-- Is the level of technicality appropriate for the intended audience?
-- Is the student substantially over or under time?
-- Does the student appropriately pace their presentation?
-- Does the student deliver their message with clarity and volume?
-- Are appropriate visualizations generated for the intended audience?
-- Are visualizations necessary and useful for supporting conclusions/explaining findings?
+Lets move on to some correlation scores between "sale price" and all the numerical variables.
 
-In order to pass the project, students must earn a minimum score of 1 for each category.
-- Earning below a 1 in one or more of the above categories would result in a failing project.
-- While a minimum of 1 in each category is the required threshold for graduation, students should aim to earn at least an average of 1.5 across each category. An average score below 1.5, while it may be passing, means students may want to solicit specific feedback in order to significantly improve the project before showcasing it as part of a portfolio or the job search.
+![This is an image](./images/Corr-heatmap.png)
 
-### REMEMBER:
+As we can observe, the numerical variables most correlated with the the target variable are:
 
-This is a learning environment and you are encouraged to try new things, even if they don't work out as well as you planned! While this rubric outlines what we look for in a _good_ project, it is up to you to go above and beyond to create a _great_ project. **Learn from your failures and you'll be prepared to succeed in the workforce**.
+    - overall_qual
+    - total_bsmt_sf
+    - 1st_flr_sf
+    - gr_liv_area
+    - garage_cars
+    - garage_area
+    
+For the categorical variables, I used a One-way ANOVA test. After the test, it seemed there is no significant information due to the fact that all p-values are practically zero.
+
+
+## Model development 1
+
+Once finished with the data cleaning and EDA, the resulting predictive features chosen for the model are: 
+
+    - overall_qual
+    - total_bsmt_sf
+    - gr_liv_area
+    - garage_area
+    - neighborhood,
+    - exter_qual,
+    - foundation,
+    - bsmt_qual
+    - kitchen_qual
+    
+These features were not only chosen for their strong correlation with "saleprice" but there is research that shows square-footage, bath and kitchen upgrades, good maintenance, neighborhood, and others are all key factors on house valuations.
+
+1. **Loading data:**
+First, we import the needed libraries and load the cleaned data we prepared earlier.
+
+2. **Matrixes creation:**
+Predictive feature matrix and target matrix are created. Because of categorical variables, I had to dummify these columns.
+
+3. **MLR model:**
+In this step, I instantiated a linear regression model. I proceeded with a cross validation, which allows you to see how the model performs on unseen data several times. I also got the R-squared metric along with some residual regression metrics like the mean squared errors (MSE).
+After getting these scores, a slight high variance can be detected due to having a higher R-squared score on the training data than the testing one. Also, the training MSE is smaller.
+
+Bellow, I attached a dataframe that dislays features and their coefficients.
+
+![This is an image](./images/Coef-1.png), ![This is an image](./images/Coef_2.png)
+
+These coefficients indicate (choosing numerical and categorical variable randomly as example):
+
+    - Holding all else constant, for every one unit increase in "overall_qual", we expect "saleprice" to increase by $1.101709e+04.
+    
+    - Holding all else constant, for every one unit increase in "kitchen_qual_Fa", we expect "saleprice" to decrease by $4.585501e+04 relative to "kitchen_qual_EX".
+    
+    
+The next step, is to verify LINE assumptions:
+
+    - **Linearity:**  𝑌  must have an approximately linear relationship with each  𝑋  variable.
+    - **Independence of Errors:** Errors (residuals)  𝜀𝑖  and  𝜀𝑗  must be independent of one another for any  𝑖≠𝑗 .
+    - **Normality:** The errors (residuals) follow a Normal distribution with mean 0.
+    - **Equality of Variances:** The errors (residuals) should have a roughly consistent pattern, regardless of the value of the  𝑋  variables. (There should be no discernable relationship between the  𝑋  variable and the residuals.)
+    - **Independence of Predictors (almost always violated at least a little!):** The independent variables  𝑋𝑖  and  𝑋𝑗  must be independent of one another for any  𝑖≠𝑗 .
+   
+
+Linearity:
+
+![This is an image](./images/Linearity-scatter.png)
+
+Normality:
+
+![This is an image](../images/Normality.png)
+
+Equality of variances:
+
+![This is an image](./images/Equality-variances.png)
+
+Independence of predictors:
+
+![This is an image](./images/Independence-pred.png)
+
+4. **Ridge model:**
+To try to fix the slight high variance, I proceeded to develope a Ridge and Lasso model.
+
+First, I looked for the optimal alpha parameter and then obtained the R-squared and MSE scores.
+
+5. **Lasso model:**
+Finally, I develope a Lasso model to compare it's performance to the prior models.
+
+6. **Model scores summary:**
+
+These are the training and testing R-squared scores for the three different models developed.
+
+| Model | MLR        | Ridge      | Lasso      |
+|-------|------------|------------|------------|
+| Train | 0.89014536 | 0.89001189 | 0.89014531 |
+| Test  | 0.86543344 | 0.86551810 | 0.86543543 |
+
+
+Prioritizing best adaptation to new unseen data, the Ridge model is the one that best fits the problem statement.
+
+
+## Model development 2
+
+This time, I did the exact same steps as before, but transforming the target variable "saleprice" into a logarithmic scale. This, helped with the linearity between predictive features and itself and improved it's normality distribution.
+
+Linearity:
+
+![This is an image](./images/Linearity-2.png)
+
+Normality:
+
+![This is an image](./images/Normality-2.png)
+
+Equality of variances:
+
+![This is an image](./images/Equality-2.png)
+
+
+Finally, here are the R-squared results of the three models, transforming the target variable "saleprice" to a logarithmic scale.
+
+| Model | MLR        | Ridge      | Lasso      |
+|-------|------------|------------|------------|
+| Train | 0.87265    | 0.87240    | 0.87210    |
+| Test  | 0.86763    | 0.86883    | 0.86859    |
+
+In this case, the R-squared scores decreased a little, but the distance between training and testing R-squared scores has been significantly reduced. Prioritizing best adaptation to new unseen data, the Lasso model is the one that best fits the problem statement.
+
+---
+## Conclusion and recommendations
+
+Because the goal of this project is build a model to predict home sale prices as accurately as possible, dismissing possible listing agent and homeowners manipulation, it's very important to do very good feature selection. 
+Transforming the "saleprice" target variable to a logarithmic scale, a Lasso model suits te purpose best because it's the best one at generalizing to new unseen data.
+I would recommend to keep optimizing the model and monitoring performance. Last but not least, it is crucial for Zillow to verify all data inputs.
